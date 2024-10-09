@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<model version="6.1.1" links="0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.state-machine.com/qm/qm.xsd">
+ <framework name="qpc"/>
+ <package name="HSM" stereotype="0x02">
+  <class name="Led_Control" superclass="qpc::QHsm">
+   <statechart properties="0x00">
+    <initial target="../1/0">
+     <initial_glyph conn="10,4,5,0,9,15">
+      <action box="0,-2,10,2"/>
+     </initial_glyph>
+    </initial>
+    <state name="LED_CONTROL">
+     <state name="LED_OFF">
+      <tran trig="LED_DIM" target="../../1">
+       <tran_glyph conn="34,25,1,3,15">
+        <action box="0,-2,10,2"/>
+       </tran_glyph>
+      </tran>
+      <state_glyph node="13,19,21,14"/>
+     </state>
+     <state name="LED_DIM">
+      <tran trig="LED_MEDIUM" target="../../2">
+       <tran_glyph conn="62,33,2,0,10">
+        <action box="0,-2,10,2"/>
+       </tran_glyph>
+      </tran>
+      <state_glyph node="49,19,21,14"/>
+     </state>
+     <state name="LED_MEDIUM">
+      <tran trig="LED_FULL" target="../../3">
+       <tran_glyph conn="52,49,3,1,-18">
+        <action box="0,-2,10,2"/>
+       </tran_glyph>
+      </tran>
+      <state_glyph node="52,43,21,14"/>
+     </state>
+     <state name="LED_FULL">
+      <tran trig="LED_OFF" target="../../0">
+       <tran_glyph conn="23,43,0,2,-10">
+        <action box="0,-2,10,2"/>
+       </tran_glyph>
+      </tran>
+      <state_glyph node="13,43,21,14"/>
+     </state>
+     <state_glyph node="9,12,78,61"/>
+    </state>
+    <state_diagram size="98,76"/>
+   </statechart>
+  </class>
+  <directory name="../Quantum_Leaps">
+   <file name="LED_Control.h">
+    <text>#ifndef LED_CONTROL_H_
+#define LED_CONTROL_H_
+#include&quot;qpc.h&quot;
+typedef enum
+{ 
+    LED_DIM_SIG,
+    LED_MEDIUM_SIG,
+    LED_FULL_SIG,
+    LED_OFF_SIG,
+}LED_State;
+$declare${HSM::Led_Control}
+#endif</text>
+   </file>
+   <file name="LED_Control.c">
+    <text>#include&quot;LED_Control.h&quot;
+$define${HSM::Led_Control}</text>
+   </file>
+  </directory>
+ </package>
+</model>

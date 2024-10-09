@@ -1,0 +1,6 @@
+../Core/Src/Quantum_Leaps/LED_Control.c:44:8:Led_Control_initial	1
+../Core/Src/Quantum_Leaps/LED_Control.c:50:8:Led_Control_LED_CONTROL	1
+../Core/Src/Quantum_Leaps/LED_Control.c:62:8:Led_Control_LED_OFF	2
+../Core/Src/Quantum_Leaps/LED_Control.c:79:8:Led_Control_LED_DIM	2
+../Core/Src/Quantum_Leaps/LED_Control.c:96:8:Led_Control_LED_MEDIUM	2
+../Core/Src/Quantum_Leaps/LED_Control.c:113:8:Led_Control_LED_FULL	2
