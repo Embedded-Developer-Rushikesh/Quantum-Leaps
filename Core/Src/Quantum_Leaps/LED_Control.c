@@ -39,6 +39,14 @@
 //$define${HSM::Led_Control} vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
 
 //${HSM::Led_Control} ........................................................
+Led_Control Led_Control_obj;
+QHsm * const Led_Control_super_QHsm =&Led_Control_obj.super;
+
+
+//${HSM::Led_Control::QHSM_Ctor} .............................................
+void Led_Control_QHSM_Ctor(void) {
+    QHsm_ctor(Led_Control_super_QHsm,Q_STATE_CAST(&Led_Control_initial));
+}
 
 //${HSM::Led_Control::SM} ....................................................
 QState Led_Control_initial(Led_Control * const me, void const * const par) {
@@ -84,6 +92,11 @@ QState Led_Control_LED_DIM(Led_Control * const me, QEvt const * const e) {
             status_ = Q_TRAN(&Led_Control_LED_MEDIUM);
             break;
         }
+        //${HSM::Led_Control::SM::LED_CONTROL::LED_DIM::LED_OFF}
+        case LED_OFF_SIG: {
+            status_ = Q_TRAN(&Led_Control_LED_OFF);
+            break;
+        }
         default: {
             status_ = Q_SUPER(&Led_Control_LED_CONTROL);
             break;
@@ -99,6 +112,11 @@ QState Led_Control_LED_MEDIUM(Led_Control * const me, QEvt const * const e) {
         //${HSM::Led_Control::SM::LED_CONTROL::LED_MEDIUM::LED_FULL}
         case LED_FULL_SIG: {
             status_ = Q_TRAN(&Led_Control_LED_FULL);
+            break;
+        }
+        //${HSM::Led_Control::SM::LED_CONTROL::LED_MEDIUM::LED_OFF}
+        case LED_OFF_SIG: {
+            status_ = Q_TRAN(&Led_Control_LED_OFF);
             break;
         }
         default: {
@@ -118,6 +136,11 @@ QState Led_Control_LED_FULL(Led_Control * const me, QEvt const * const e) {
             status_ = Q_TRAN(&Led_Control_LED_OFF);
             break;
         }
+        //${HSM::Led_Control::SM::LED_CONTROL::LED_FULL::LED_DIM}
+        case LED_DIM_SIG: {
+            status_ = Q_TRAN(&Led_Control_LED_DIM);
+            break;
+        }
         default: {
             status_ = Q_SUPER(&Led_Control_LED_CONTROL);
             break;
@@ -126,3 +149,8 @@ QState Led_Control_LED_FULL(Led_Control * const me, QEvt const * const e) {
     return status_;
 }
 //$enddef${HSM::Led_Control} ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+//$define${HSM::Led_Control::Opeation} vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
+//$enddef${HSM::Led_Control::Opeation} ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+//$define${HSM::Led_Control::QHSM_init}
+//$define${HSM::Led_Control::QHSM_Ctor}
+//$define${HSM::Led_Control::super_QHsm}

@@ -33,18 +33,31 @@
 #include"qpc.h"
 typedef enum
 {
-    LED_DIM_SIG,
+    LED_DIM_SIG=Q_USER_SIG,
     LED_MEDIUM_SIG,
     LED_FULL_SIG,
     LED_OFF_SIG,
-}LED_State;
+}LED_State_t;
 //$declare${HSM::Led_Control} vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
 
 //${HSM::Led_Control} ........................................................
-typedef struct {
+typedef struct Led_Control {
 // protected:
     QHsm super;
+
+// private:
+    uint8_t ON;
+    uint8_t OFF;
 } Led_Control;
+
+extern Led_Control Led_Control_obj;
+
+extern QHsm * const Led_Control_super_QHsm;
+
+// public:
+void Led_Control_Opeation(Led_Control * const me);
+void Led_Control_QHSM_Ctor(void);
+void Led_Control_QHSM_init(void);
 
 // protected:
 QState Led_Control_initial(Led_Control * const me, void const * const par);
@@ -54,4 +67,7 @@ QState Led_Control_LED_DIM(Led_Control * const me, QEvt const * const e);
 QState Led_Control_LED_MEDIUM(Led_Control * const me, QEvt const * const e);
 QState Led_Control_LED_FULL(Led_Control * const me, QEvt const * const e);
 //$enddecl${HSM::Led_Control} ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+//$declare${HSM::Led_Control::QHSM_init}
+//$define${HSM::Led_Control::super_QHsm}
+
 #endif

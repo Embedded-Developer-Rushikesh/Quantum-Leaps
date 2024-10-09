@@ -1,6 +1,7 @@
-../Core/Src/Quantum_Leaps/LED_Control.c:44:8:Led_Control_initial	16	static
-../Core/Src/Quantum_Leaps/LED_Control.c:50:8:Led_Control_LED_CONTROL	24	static
-../Core/Src/Quantum_Leaps/LED_Control.c:62:8:Led_Control_LED_OFF	24	static
-../Core/Src/Quantum_Leaps/LED_Control.c:79:8:Led_Control_LED_DIM	24	static
-../Core/Src/Quantum_Leaps/LED_Control.c:96:8:Led_Control_LED_MEDIUM	24	static
-../Core/Src/Quantum_Leaps/LED_Control.c:113:8:Led_Control_LED_FULL	24	static
+../Core/Src/Quantum_Leaps/LED_Control.c:47:6:Led_Control_QHSM_Ctor	8	static
+../Core/Src/Quantum_Leaps/LED_Control.c:52:8:Led_Control_initial	16	static
+../Core/Src/Quantum_Leaps/LED_Control.c:58:8:Led_Control_LED_CONTROL	24	static
+../Core/Src/Quantum_Leaps/LED_Control.c:70:8:Led_Control_LED_OFF	24	static
+../Core/Src/Quantum_Leaps/LED_Control.c:87:8:Led_Control_LED_DIM	24	static
+../Core/Src/Quantum_Leaps/LED_Control.c:109:8:Led_Control_LED_MEDIUM	24	static
+../Core/Src/Quantum_Leaps/LED_Control.c:131:8:Led_Control_LED_FULL	24	static
