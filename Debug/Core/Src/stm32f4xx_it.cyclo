@@ -5,3 +5,4 @@
 ../Core/Src/stm32f4xx_it.c:129:6:SVC_Handler	1
 ../Core/Src/stm32f4xx_it.c:142:6:DebugMon_Handler	1
 ../Core/Src/stm32f4xx_it.c:155:6:SysTick_Handler	1
+../Core/Src/stm32f4xx_it.c:176:6:EXTI15_10_IRQHandler	1

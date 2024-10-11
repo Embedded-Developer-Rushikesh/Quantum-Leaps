@@ -3,26 +3,19 @@
  <framework name="qpc"/>
  <package name="HSM" stereotype="0x02">
   <class name="Led_Control" superclass="qpc::QHsm">
-   <attribute name="ON" type="uint8_t" visibility="0x02" properties="0x00"/>
-   <attribute name="OFF" type="uint8_t" visibility="0x02" properties="0x00"/>
-   <attribute name="obj" type="Led_Control" visibility="0x02" properties="0x01"/>
-   <attribute name="super_QHsm" type="QHsm * const" visibility="0x02" properties="0x01">
-    <code>=&amp;Led_Control_obj.super;</code>
-   </attribute>
-   <operation name="Opeation" type="void" visibility="0x00" properties="0x00"/>
-   <operation name="QHSM_Ctor" type="void" visibility="0x00" properties="0x01">
-    <code>QHsm_ctor(Led_Control_super_QHsm,Q_STATE_CAST(&amp;Led_Control_initial));</code>
-   </operation>
-   <operation name="QHSM_init" type="void" visibility="0x00" properties="0x01"/>
+   <attribute name="obj" type="Led_Control" visibility="0x00" properties="0x01"/>
+   <attribute name="LED_Status" type="uint8_t" visibility="0x00" properties="0x00"/>
    <statechart properties="0x00">
     <initial target="../1/0">
+     <action>LED_Intencity_Control(LED_OFF);</action>
      <initial_glyph conn="10,4,5,0,9,10">
       <action box="0,-2,10,2"/>
      </initial_glyph>
     </initial>
     <state name="LED_CONTROL">
      <state name="LED_OFF">
-      <tran trig="LED_DIM" target="../../1">
+      <tran trig="LED_ON" target="../../1">
+       <action>LED_Intencity_Control(LED_DIM);</action>
        <tran_glyph conn="34,20,1,3,24">
         <action box="0,-2,10,2"/>
        </tran_glyph>
@@ -30,12 +23,14 @@
       <state_glyph node="13,14,21,14"/>
      </state>
      <state name="LED_DIM">
-      <tran trig="LED_MEDIUM" target="../../2">
+      <tran trig="LED_ON" target="../../2">
+       <action>LED_Intencity_Control(LED_MEDIUM);</action>
        <tran_glyph conn="71,28,2,0,7">
         <action box="0,-2,10,2"/>
        </tran_glyph>
       </tran>
       <tran trig="LED_OFF" target="../../0">
+       <action>LED_Intencity_Control(LED_OFF);</action>
        <tran_glyph conn="58,22,3,1,-24">
         <action box="0,-2,10,2"/>
        </tran_glyph>
@@ -43,12 +38,14 @@
       <state_glyph node="58,14,21,14"/>
      </state>
      <state name="LED_MEDIUM">
-      <tran trig="LED_FULL" target="../../3">
+      <tran trig="LED_ON" target="../../3">
+       <action>LED_Intencity_Control(LED_FULL);</action>
        <tran_glyph conn="72,49,2,0,7">
         <action box="0,-2,10,2"/>
        </tran_glyph>
       </tran>
       <tran trig="LED_OFF" target="../../0">
+       <action>LED_Intencity_Control(LED_OFF);</action>
        <tran_glyph conn="61,42,3,2,-37,-14">
         <action box="0,-2,10,2"/>
        </tran_glyph>
@@ -57,11 +54,13 @@
      </state>
      <state name="LED_FULL">
       <tran trig="LED_OFF" target="../../0">
+       <action>LED_Intencity_Control(LED_OFF);</action>
        <tran_glyph conn="62,62,3,2,-44,-34">
         <action box="0,-2,10,2"/>
        </tran_glyph>
       </tran>
-      <tran trig="LED_DIM" target="../../1">
+      <tran trig="LED_ON" target="../../1">
+       <action>LED_Intencity_Control(LED_DIM);</action>
        <tran_glyph conn="75,70,2,0,3,12,-63,-16,4">
         <action box="0,-2,10,2"/>
        </tran_glyph>
@@ -78,27 +77,59 @@
     <text>#ifndef LED_CONTROL_H_
 #define LED_CONTROL_H_
 #include&quot;qpc.h&quot;
+
 typedef enum
 { 
-    LED_DIM_SIG=Q_USER_SIG,
-    LED_MEDIUM_SIG,
-    LED_FULL_SIG,
-    LED_OFF_SIG,
+LED_OFF_SIG=Q_USER_SIG,
+LED_ON_SIG
 }LED_State_t;
 $declare${HSM::Led_Control}
-//$declare${HSM::Led_Control::QHSM_init}
-//$define${HSM::Led_Control::super_QHsm}
+$declare${HSM::LED_Intencity_Control}
+$declare${HSM::LED_FULL}
+$declare${HSM::LED_MEDIUM}
+$declare${HSM::LED_DIM}
+$declare${HSM::LED_OFF}
+$declare${HSM::super_Led_Control}
+$declare${HSM::Led_Control_Ctor}
 
 #endif</text>
    </file>
    <file name="LED_Control.c">
     <text>#include&quot;LED_Control.h&quot;
+#include &quot;main.h&quot;
+extern TIM_HandleTypeDef htim2;
+$define${HSM::LED_FULL}
+$define${HSM::LED_MEDIUM}
+$define${HSM::LED_DIM}
+$define${HSM::LED_OFF}
+$define${HSM::super_Led_Control}
 $define${HSM::Led_Control}
-$define${HSM::Led_Control::Opeation}
-//$define${HSM::Led_Control::QHSM_init}
-//$define${HSM::Led_Control::QHSM_Ctor}
-//$define${HSM::Led_Control::super_QHsm}</text>
+$define${HSM::LED_Intencity_Control}
+$define${HSM::Led_Control_Ctor}
+</text>
    </file>
   </directory>
+  <operation name="LED_Intencity_Control" type="void" visibility="0x00" properties="0x00">
+   <parameter name="duty_uint16_t" type="uint16_t"/>
+   <code>__HAL_TIM_SET_COMPARE(&amp;htim2,TIM_CHANNEL_1,duty_uint16_t);</code>
+  </operation>
+  <attribute name="LED_FULL" type="uint16_t" visibility="0x00" properties="0x00">
+   <code>=255;</code>
+  </attribute>
+  <attribute name="LED_MEDIUM" type="uint16_t" visibility="0x00" properties="0x00">
+   <code>=125;</code>
+  </attribute>
+  <attribute name="LED_DIM" type="uint16_t" visibility="0x00" properties="0x00">
+   <code>=50;</code>
+  </attribute>
+  <attribute name="LED_OFF" type="uint16_t" visibility="0x00" properties="0x00">
+   <code>=0;</code>
+  </attribute>
+  <attribute name="super_Led_Control" type="QHsm  *const" visibility="0x00" properties="0x00">
+   <code>=&amp;Led_Control_obj.super;</code>
+  </attribute>
+  <operation name="Led_Control_Ctor" type="void" visibility="0x00" properties="0x00">
+   <code>QHsm_ctor(super_Led_Control,Q_STATE_CAST(&amp;Led_Control_initial));</code>
+  </operation>
  </package>
 </model>

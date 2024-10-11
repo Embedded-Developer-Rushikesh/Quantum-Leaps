@@ -29,6 +29,8 @@
 //
 //$endhead${HSM::../Quantum_Leaps::LED_Control.c} ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 #include"LED_Control.h"
+#include "main.h"
+extern TIM_HandleTypeDef htim2;
 //$skip${QP_VERSION} vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
 // Check for the minimum required QP version
 #if (QP_VERSION < 730U) || (QP_VERSION != ((QP_RELEASE^4294967295U) % 0x3E8U))
@@ -36,21 +38,40 @@
 #endif
 //$endskip${QP_VERSION} ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+//$define${HSM::LED_FULL} vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
+
+//${HSM::LED_FULL} ...........................................................
+uint16_t LED_FULL =255;
+//$enddef${HSM::LED_FULL} ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+//$define${HSM::LED_MEDIUM} vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
+
+//${HSM::LED_MEDIUM} .........................................................
+uint16_t LED_MEDIUM =125;
+//$enddef${HSM::LED_MEDIUM} ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+//$define${HSM::LED_DIM} vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
+
+//${HSM::LED_DIM} ............................................................
+uint16_t LED_DIM =50;
+//$enddef${HSM::LED_DIM} ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+//$define${HSM::LED_OFF} vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
+
+//${HSM::LED_OFF} ............................................................
+uint16_t LED_OFF =0;
+//$enddef${HSM::LED_OFF} ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+//$define${HSM::super_Led_Control} vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
+
+//${HSM::super_Led_Control} ..................................................
+QHsm  *const super_Led_Control =&Led_Control_obj.super;
+//$enddef${HSM::super_Led_Control} ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 //$define${HSM::Led_Control} vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
 
 //${HSM::Led_Control} ........................................................
 Led_Control Led_Control_obj;
-QHsm * const Led_Control_super_QHsm =&Led_Control_obj.super;
-
-
-//${HSM::Led_Control::QHSM_Ctor} .............................................
-void Led_Control_QHSM_Ctor(void) {
-    QHsm_ctor(Led_Control_super_QHsm,Q_STATE_CAST(&Led_Control_initial));
-}
 
 //${HSM::Led_Control::SM} ....................................................
 QState Led_Control_initial(Led_Control * const me, void const * const par) {
     //${HSM::Led_Control::SM::initial}
+    LED_Intencity_Control(LED_OFF);
     return Q_TRAN(&Led_Control_LED_OFF);
 }
 
@@ -70,8 +91,9 @@ QState Led_Control_LED_CONTROL(Led_Control * const me, QEvt const * const e) {
 QState Led_Control_LED_OFF(Led_Control * const me, QEvt const * const e) {
     QState status_;
     switch (e->sig) {
-        //${HSM::Led_Control::SM::LED_CONTROL::LED_OFF::LED_DIM}
-        case LED_DIM_SIG: {
+        //${HSM::Led_Control::SM::LED_CONTROL::LED_OFF::LED_ON}
+        case LED_ON_SIG: {
+            LED_Intencity_Control(LED_DIM);
             status_ = Q_TRAN(&Led_Control_LED_DIM);
             break;
         }
@@ -87,13 +109,15 @@ QState Led_Control_LED_OFF(Led_Control * const me, QEvt const * const e) {
 QState Led_Control_LED_DIM(Led_Control * const me, QEvt const * const e) {
     QState status_;
     switch (e->sig) {
-        //${HSM::Led_Control::SM::LED_CONTROL::LED_DIM::LED_MEDIUM}
-        case LED_MEDIUM_SIG: {
+        //${HSM::Led_Control::SM::LED_CONTROL::LED_DIM::LED_ON}
+        case LED_ON_SIG: {
+            LED_Intencity_Control(LED_MEDIUM);
             status_ = Q_TRAN(&Led_Control_LED_MEDIUM);
             break;
         }
         //${HSM::Led_Control::SM::LED_CONTROL::LED_DIM::LED_OFF}
         case LED_OFF_SIG: {
+            LED_Intencity_Control(LED_OFF);
             status_ = Q_TRAN(&Led_Control_LED_OFF);
             break;
         }
@@ -109,13 +133,15 @@ QState Led_Control_LED_DIM(Led_Control * const me, QEvt const * const e) {
 QState Led_Control_LED_MEDIUM(Led_Control * const me, QEvt const * const e) {
     QState status_;
     switch (e->sig) {
-        //${HSM::Led_Control::SM::LED_CONTROL::LED_MEDIUM::LED_FULL}
-        case LED_FULL_SIG: {
+        //${HSM::Led_Control::SM::LED_CONTROL::LED_MEDIUM::LED_ON}
+        case LED_ON_SIG: {
+            LED_Intencity_Control(LED_FULL);
             status_ = Q_TRAN(&Led_Control_LED_FULL);
             break;
         }
         //${HSM::Led_Control::SM::LED_CONTROL::LED_MEDIUM::LED_OFF}
         case LED_OFF_SIG: {
+            LED_Intencity_Control(LED_OFF);
             status_ = Q_TRAN(&Led_Control_LED_OFF);
             break;
         }
@@ -133,11 +159,13 @@ QState Led_Control_LED_FULL(Led_Control * const me, QEvt const * const e) {
     switch (e->sig) {
         //${HSM::Led_Control::SM::LED_CONTROL::LED_FULL::LED_OFF}
         case LED_OFF_SIG: {
+            LED_Intencity_Control(LED_OFF);
             status_ = Q_TRAN(&Led_Control_LED_OFF);
             break;
         }
-        //${HSM::Led_Control::SM::LED_CONTROL::LED_FULL::LED_DIM}
-        case LED_DIM_SIG: {
+        //${HSM::Led_Control::SM::LED_CONTROL::LED_FULL::LED_ON}
+        case LED_ON_SIG: {
+            LED_Intencity_Control(LED_DIM);
             status_ = Q_TRAN(&Led_Control_LED_DIM);
             break;
         }
@@ -149,8 +177,18 @@ QState Led_Control_LED_FULL(Led_Control * const me, QEvt const * const e) {
     return status_;
 }
 //$enddef${HSM::Led_Control} ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-//$define${HSM::Led_Control::Opeation} vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
-//$enddef${HSM::Led_Control::Opeation} ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-//$define${HSM::Led_Control::QHSM_init}
-//$define${HSM::Led_Control::QHSM_Ctor}
-//$define${HSM::Led_Control::super_QHsm}
+//$define${HSM::LED_Intencity_Control} vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
+
+//${HSM::LED_Intencity_Control} ..............................................
+void LED_Intencity_Control(uint16_t duty_uint16_t) {
+    __HAL_TIM_SET_COMPARE(&htim2,TIM_CHANNEL_1,duty_uint16_t);
+}
+//$enddef${HSM::LED_Intencity_Control} ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+//$define${HSM::Led_Control_Ctor} vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
+
+//${HSM::Led_Control_Ctor} ...................................................
+void Led_Control_Ctor(void) {
+    QHsm_ctor(super_Led_Control,Q_STATE_CAST(&Led_Control_initial));
+}
+//$enddef${HSM::Led_Control_Ctor} ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+

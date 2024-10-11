@@ -14,7 +14,6 @@ RM := rm -rf
 -include Middlewares/Third_Party/QuantumLeaps_RTEF_qpc/ports/arm-cm/qk/gnu/subdir.mk
 -include Drivers/STM32F4xx_HAL_Driver/Src/subdir.mk
 -include Core/Startup/subdir.mk
--include Core/Src/Quantum_Leaps/subdir.mk
 -include Core/Src/subdir.mk
 -include objects.mk
 
@@ -64,8 +63,8 @@ all: main-build
 main-build: LED_Intensity_Control.elf secondary-outputs
 
 # Tool invocations
-LED_Intensity_Control.elf LED_Intensity_Control.map: $(OBJS) $(USER_OBJS) E:\Github\git_repository\Quantum_Leaps\LED_Intencity_Control\STM32F446RETX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-gcc -o "LED_Intensity_Control.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"E:\Github\git_repository\Quantum_Leaps\LED_Intencity_Control\STM32F446RETX_FLASH.ld" --specs=nosys.specs -Wl,-Map="LED_Intensity_Control.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+LED_Intensity_Control.elf LED_Intensity_Control.map: $(OBJS) $(USER_OBJS) E:\Github\git_repository\Quantum_Leaps\LED_Intencity_Control\Quantum-Leaps\STM32F446RETX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-gcc -o "LED_Intensity_Control.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"E:\Github\git_repository\Quantum_Leaps\LED_Intencity_Control\Quantum-Leaps\STM32F446RETX_FLASH.ld" --specs=nosys.specs -Wl,-Map="LED_Intensity_Control.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 

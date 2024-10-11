@@ -31,12 +31,11 @@
 #ifndef LED_CONTROL_H_
 #define LED_CONTROL_H_
 #include"qpc.h"
+
 typedef enum
 {
-    LED_DIM_SIG=Q_USER_SIG,
-    LED_MEDIUM_SIG,
-    LED_FULL_SIG,
-    LED_OFF_SIG,
+LED_OFF_SIG=Q_USER_SIG,
+LED_ON_SIG
 }LED_State_t;
 //$declare${HSM::Led_Control} vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
 
@@ -45,19 +44,11 @@ typedef struct Led_Control {
 // protected:
     QHsm super;
 
-// private:
-    uint8_t ON;
-    uint8_t OFF;
+// public:
+    uint8_t LED_Status;
 } Led_Control;
 
 extern Led_Control Led_Control_obj;
-
-extern QHsm * const Led_Control_super_QHsm;
-
-// public:
-void Led_Control_Opeation(Led_Control * const me);
-void Led_Control_QHSM_Ctor(void);
-void Led_Control_QHSM_init(void);
 
 // protected:
 QState Led_Control_initial(Led_Control * const me, void const * const par);
@@ -67,7 +58,40 @@ QState Led_Control_LED_DIM(Led_Control * const me, QEvt const * const e);
 QState Led_Control_LED_MEDIUM(Led_Control * const me, QEvt const * const e);
 QState Led_Control_LED_FULL(Led_Control * const me, QEvt const * const e);
 //$enddecl${HSM::Led_Control} ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-//$declare${HSM::Led_Control::QHSM_init}
-//$define${HSM::Led_Control::super_QHsm}
+//$declare${HSM::LED_Intencity_Control} vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
+
+//${HSM::LED_Intencity_Control} ..............................................
+void LED_Intencity_Control(uint16_t duty_uint16_t);
+//$enddecl${HSM::LED_Intencity_Control} ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+//$declare${HSM::LED_FULL} vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
+
+//${HSM::LED_FULL} ...........................................................
+extern uint16_t LED_FULL;
+//$enddecl${HSM::LED_FULL} ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+//$declare${HSM::LED_MEDIUM} vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
+
+//${HSM::LED_MEDIUM} .........................................................
+extern uint16_t LED_MEDIUM;
+//$enddecl${HSM::LED_MEDIUM} ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+//$declare${HSM::LED_DIM} vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
+
+//${HSM::LED_DIM} ............................................................
+extern uint16_t LED_DIM;
+//$enddecl${HSM::LED_DIM} ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+//$declare${HSM::LED_OFF} vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
+
+//${HSM::LED_OFF} ............................................................
+extern uint16_t LED_OFF;
+//$enddecl${HSM::LED_OFF} ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+//$declare${HSM::super_Led_Control} vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
+
+//${HSM::super_Led_Control} ..................................................
+extern QHsm  *const super_Led_Control;
+//$enddecl${HSM::super_Led_Control} ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+//$declare${HSM::Led_Control_Ctor} vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
+
+//${HSM::Led_Control_Ctor} ...................................................
+void Led_Control_Ctor(void);
+//$enddecl${HSM::Led_Control_Ctor} ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 #endif
