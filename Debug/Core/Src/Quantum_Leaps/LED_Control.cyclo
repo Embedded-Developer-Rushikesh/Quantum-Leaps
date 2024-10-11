@@ -1,7 +1,0 @@
-../Core/Src/Quantum_Leaps/LED_Control.c:47:6:Led_Control_QHSM_Ctor	1
-../Core/Src/Quantum_Leaps/LED_Control.c:52:8:Led_Control_initial	1
-../Core/Src/Quantum_Leaps/LED_Control.c:58:8:Led_Control_LED_CONTROL	1
-../Core/Src/Quantum_Leaps/LED_Control.c:70:8:Led_Control_LED_OFF	2
-../Core/Src/Quantum_Leaps/LED_Control.c:87:8:Led_Control_LED_DIM	3
-../Core/Src/Quantum_Leaps/LED_Control.c:109:8:Led_Control_LED_MEDIUM	3
-../Core/Src/Quantum_Leaps/LED_Control.c:131:8:Led_Control_LED_FULL	3
