@@ -1,0 +1,15 @@
+../Drivers/CMSIS/Include/core_cm4.h:1653:22:__NVIC_SetPriorityGrouping	1
+../Drivers/CMSIS/Include/core_cm4.h:1814:22:__NVIC_SetPriority	2
+../Drivers/CMSIS/Include/core_cm4.h:2022:26:SysTick_Config	2
+../Core/Src/Quantum_Leaps/main.c:72:5:main	1
+../Core/Src/Quantum_Leaps/main.c:133:6:SystemClock_Config	3
+../Core/Src/Quantum_Leaps/main.c:181:13:MX_TIM2_Init	4
+../Core/Src/Quantum_Leaps/main.c:226:13:MX_USART2_UART_Init	2
+../Core/Src/Quantum_Leaps/main.c:259:13:MX_GPIO_Init	1
+../Core/Src/Quantum_Leaps/main.c:293:6:SysTick_Handler	2
+../Core/Src/Quantum_Leaps/main.c:300:12:Q_onError	1
+../Core/Src/Quantum_Leaps/main.c:318:6:QF_onStartup	1
+../Core/Src/Quantum_Leaps/main.c:339:6:QF_onCleanup	1
+../Core/Src/Quantum_Leaps/main.c:342:6:QK_onIdle	1
+../Core/Src/Quantum_Leaps/main.c:370:6:HAL_TIM_PeriodElapsedCallback	2
+../Core/Src/Quantum_Leaps/main.c:388:6:Error_Handler	1

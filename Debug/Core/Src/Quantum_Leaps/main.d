@@ -1,13 +1,4 @@
-Core/Src/LED_Control.o: ../Core/Src/LED_Control.c \
- ../Core/Src/LED_Control.h \
- ../Middlewares/Third_Party/QuantumLeaps_RTEF_qpc/include/qpc.h \
- ../Middlewares/Third_Party/QuantumLeaps_RTEF_qpc/ports/arm-cm/qk/gnu/qp_port.h \
- ../Middlewares/Third_Party/QuantumLeaps_RTEF_qpc/include/qequeue.h \
- ../Middlewares/Third_Party/QuantumLeaps_RTEF_qpc/include/qmpool.h \
- ../Middlewares/Third_Party/QuantumLeaps_RTEF_qpc/include/qp.h \
- ../Middlewares/Third_Party/QuantumLeaps_RTEF_qpc/include/qk.h \
- ../Middlewares/Third_Party/QuantumLeaps_RTEF_qpc/include/qsafe.h \
- ../Middlewares/Third_Party/QuantumLeaps_RTEF_qpc/include/qs_dummy.h \
+Core/Src/Quantum_Leaps/main.o: ../Core/Src/Quantum_Leaps/main.c \
  ../Core/Inc/main.h ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h \
  ../Core/Inc/stm32f4xx_hal_conf.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_rcc.h \
@@ -35,16 +26,16 @@ Core/Src/LED_Control.o: ../Core/Src/LED_Control.c \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_pwr_ex.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim_ex.h \
- ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_uart.h
-../Core/Src/LED_Control.h:
-../Middlewares/Third_Party/QuantumLeaps_RTEF_qpc/include/qpc.h:
-../Middlewares/Third_Party/QuantumLeaps_RTEF_qpc/ports/arm-cm/qk/gnu/qp_port.h:
-../Middlewares/Third_Party/QuantumLeaps_RTEF_qpc/include/qequeue.h:
-../Middlewares/Third_Party/QuantumLeaps_RTEF_qpc/include/qmpool.h:
-../Middlewares/Third_Party/QuantumLeaps_RTEF_qpc/include/qp.h:
-../Middlewares/Third_Party/QuantumLeaps_RTEF_qpc/include/qk.h:
-../Middlewares/Third_Party/QuantumLeaps_RTEF_qpc/include/qsafe.h:
-../Middlewares/Third_Party/QuantumLeaps_RTEF_qpc/include/qs_dummy.h:
+ ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_uart.h \
+ ../Middlewares/Third_Party/QuantumLeaps_RTEF_qpc/include/qpc.h \
+ ../Middlewares/Third_Party/QuantumLeaps_RTEF_qpc/ports/arm-cm/qk/gnu/qp_port.h \
+ ../Middlewares/Third_Party/QuantumLeaps_RTEF_qpc/include/qequeue.h \
+ ../Middlewares/Third_Party/QuantumLeaps_RTEF_qpc/include/qmpool.h \
+ ../Middlewares/Third_Party/QuantumLeaps_RTEF_qpc/include/qp.h \
+ ../Middlewares/Third_Party/QuantumLeaps_RTEF_qpc/include/qk.h \
+ ../Middlewares/Third_Party/QuantumLeaps_RTEF_qpc/include/qsafe.h \
+ ../Middlewares/Third_Party/QuantumLeaps_RTEF_qpc/include/qs_dummy.h \
+ ../Core/Src/Quantum_Leaps/Led_Control.h
 ../Core/Inc/main.h:
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h:
 ../Core/Inc/stm32f4xx_hal_conf.h:
@@ -74,3 +65,12 @@ Core/Src/LED_Control.o: ../Core/Src/LED_Control.c \
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim.h:
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim_ex.h:
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_uart.h:
+../Middlewares/Third_Party/QuantumLeaps_RTEF_qpc/include/qpc.h:
+../Middlewares/Third_Party/QuantumLeaps_RTEF_qpc/ports/arm-cm/qk/gnu/qp_port.h:
+../Middlewares/Third_Party/QuantumLeaps_RTEF_qpc/include/qequeue.h:
+../Middlewares/Third_Party/QuantumLeaps_RTEF_qpc/include/qmpool.h:
+../Middlewares/Third_Party/QuantumLeaps_RTEF_qpc/include/qp.h:
+../Middlewares/Third_Party/QuantumLeaps_RTEF_qpc/include/qk.h:
+../Middlewares/Third_Party/QuantumLeaps_RTEF_qpc/include/qsafe.h:
+../Middlewares/Third_Party/QuantumLeaps_RTEF_qpc/include/qs_dummy.h:
+../Core/Src/Quantum_Leaps/Led_Control.h:

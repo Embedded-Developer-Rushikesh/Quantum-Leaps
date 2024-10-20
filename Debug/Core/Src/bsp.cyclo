@@ -1,0 +1,14 @@
+../Drivers/CMSIS/Include/core_cm4.h:1653:22:__NVIC_SetPriorityGrouping	1
+../Drivers/CMSIS/Include/core_cm4.h:1814:22:__NVIC_SetPriority	2
+../Drivers/CMSIS/Include/core_cm4.h:2022:26:SysTick_Config	2
+../Core/Src/bsp.c:52:12:Q_onError	1
+../Core/Src/bsp.c:72:6:assert_failed	0
+../Core/Src/bsp.c:78:6:SysTick_Handler	2
+../Core/Src/bsp.c:89:6:BSP_init	1
+../Core/Src/bsp.c:125:6:BSP_start	1
+../Core/Src/bsp.c:146:6:BSP_ledOn	1
+../Core/Src/bsp.c:151:6:BSP_ledOff	1
+../Core/Src/bsp.c:156:6:BSP_terminate	1
+../Core/Src/bsp.c:162:6:QF_onStartup	1
+../Core/Src/bsp.c:183:6:QF_onCleanup	1
+../Core/Src/bsp.c:186:6:QK_onIdle	1

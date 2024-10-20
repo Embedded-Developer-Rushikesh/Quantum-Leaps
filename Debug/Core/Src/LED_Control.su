@@ -1,8 +1,0 @@
-../Core/Src/LED_Control.c:72:8:Led_Control_initial	16	static
-../Core/Src/LED_Control.c:80:8:Led_Control_LED_CONTROL	24	static
-../Core/Src/LED_Control.c:92:8:Led_Control_LED_OFF	24	static
-../Core/Src/LED_Control.c:111:8:Led_Control_LED_DIM	24	static
-../Core/Src/LED_Control.c:137:8:Led_Control_LED_MEDIUM	24	static
-../Core/Src/LED_Control.c:163:8:Led_Control_LED_FULL	24	static
-../Core/Src/LED_Control.c:191:6:LED_Intencity_Control	16	static
-../Core/Src/LED_Control.c:198:6:Led_Control_Ctor	8	static

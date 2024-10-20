@@ -21,7 +21,9 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
- #include"LED_Control.h"
+#include"stm32f4xx.h"
+#include "qpc.h"                 // QP/C real-time embedded framework
+#include "Led_Control.h"              // Blinky Application interface
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -40,7 +42,7 @@
 /* USER CODE END PM */
 
 /* Private variables ---------------------------------------------------------*/
-TIM_HandleTypeDef htim2;
+extern TIM_HandleTypeDef htim2;
 
 UART_HandleTypeDef huart2;
 
@@ -54,12 +56,13 @@ static void MX_GPIO_Init(void);
 static void MX_USART2_UART_Init(void);
 static void MX_TIM2_Init(void);
 /* USER CODE BEGIN PFP */
+
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-uint32_t previousMillis = 0;
-uint32_t currentMillis = 0;
+static QEvt blinkyQueueSto[10];
+static QEvt ButtonQueueSto[10];
 /* USER CODE END 0 */
 
 /**
@@ -70,9 +73,6 @@ int main(void)
 {
   /* USER CODE BEGIN 1 */
 
-	   QF_init();
-
-
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
@@ -81,8 +81,7 @@ int main(void)
   HAL_Init();
 
   /* USER CODE BEGIN Init */
-  Led_Control_Ctor();
-  QHsm_init_(super_Led_Control, (void *)0, 0U);
+
   /* USER CODE END Init */
 
   /* Configure the system clock */
@@ -97,31 +96,33 @@ int main(void)
   MX_USART2_UART_Init();
   MX_TIM2_Init();
   /* USER CODE BEGIN 2 */
-
-HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_1);
+  QF_init();       // initialize the framework and the underlying RT kernel
+   ctor_Led_Control();      // initialize the BSP
+   button_ctor();
+   QACTIVE_START(super_Led_Control,
+       2U,                          // QP prio. of the AO
+       blinkyQueueSto,               // event queue storage
+       Q_DIM(blinkyQueueSto),       // queue length [events]
+       (void *)0, 0U,               // no stack storage
+       (void *)0);                  // no initialization param// start the AOs/Threads
+   QACTIVE_START(super_button,
+       1U,                          // QP prio. of the AO
+ 	  ButtonQueueSto,               // event queue storage
+       Q_DIM(ButtonQueueSto),       // queue length [events]
+       (void *)0, 0U,               // no stack storage
+       (void *)0);                  // no initialization param// start the AOs/Threads
+   return QF_run(); // run the QF application
 
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-  while (1)
-  {
-    /* USER CODE END WHILE */
-
-    /* USER CODE BEGIN 3 */
-	  QEvt e;
-	  if(HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_13)==GPIO_PIN_SET)
-	  {
-//		//  e.sig = LED_ON_SIG;
-		  e.sig = LED_OFF_SIG;
-	  }else
-	  {
-		 // e.sig = LED_OFF_SIG;
-		  e.sig = LED_ON_SIG;
-	  }
-	  QHsm_dispatch_(super_Led_Control, &e, 0U);
-
-  }
+//  while (1)
+//  {
+//    /* USER CODE END WHILE */
+//
+//    /* USER CODE BEGIN 3 */
+//  }
   /* USER CODE END 3 */
 }
 
@@ -186,7 +187,6 @@ static void MX_TIM2_Init(void)
 
   TIM_ClockConfigTypeDef sClockSourceConfig = {0};
   TIM_MasterConfigTypeDef sMasterConfig = {0};
-  TIM_OC_InitTypeDef sConfigOC = {0};
 
   /* USER CODE BEGIN TIM2_Init 1 */
 
@@ -206,28 +206,15 @@ static void MX_TIM2_Init(void)
   {
     Error_Handler();
   }
-  if (HAL_TIM_PWM_Init(&htim2) != HAL_OK)
-  {
-    Error_Handler();
-  }
   sMasterConfig.MasterOutputTrigger = TIM_TRGO_RESET;
   sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
   if (HAL_TIMEx_MasterConfigSynchronization(&htim2, &sMasterConfig) != HAL_OK)
   {
     Error_Handler();
   }
-  sConfigOC.OCMode = TIM_OCMODE_PWM1;
-  sConfigOC.Pulse = 0;
-  sConfigOC.OCPolarity = TIM_OCPOLARITY_HIGH;
-  sConfigOC.OCFastMode = TIM_OCFAST_DISABLE;
-  if (HAL_TIM_PWM_ConfigChannel(&htim2, &sConfigOC, TIM_CHANNEL_1) != HAL_OK)
-  {
-    Error_Handler();
-  }
   /* USER CODE BEGIN TIM2_Init 2 */
 
   /* USER CODE END TIM2_Init 2 */
-  HAL_TIM_MspPostInit(&htim2);
 
 }
 
@@ -281,52 +268,117 @@ static void MX_GPIO_Init(void)
   __HAL_RCC_GPIOA_CLK_ENABLE();
   __HAL_RCC_GPIOB_CLK_ENABLE();
 
+  /*Configure GPIO pin Output Level */
+  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, GPIO_PIN_RESET);
+
   /*Configure GPIO pin : PC13 */
   GPIO_InitStruct.Pin = GPIO_PIN_13;
-  GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING;
+  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
-  /* EXTI interrupt init*/
-  HAL_NVIC_SetPriority(EXTI15_10_IRQn, 0, 0);
-  HAL_NVIC_EnableIRQ(EXTI15_10_IRQn);
+  /*Configure GPIO pin : PA5 */
+//  GPIO_InitStruct.Pin = GPIO_PIN_5;
+//  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+//  GPIO_InitStruct.Pull = GPIO_NOPULL;
+//  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+//  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
 /* USER CODE BEGIN MX_GPIO_Init_2 */
-
 /* USER CODE END MX_GPIO_Init_2 */
 }
 
 /* USER CODE BEGIN 4 */
+void SysTick_Handler(void); // prototype
+void SysTick_Handler(void) {
+    QK_ISR_ENTRY();   // inform QK about entering an ISR
 
+    QTIMEEVT_TICK_X(0U, &l_SysTick_Handler); // time events at rate 0
+   // cnt++;
+    QK_ISR_EXIT();    // inform QK about exiting an ISR
+}
 Q_NORETURN Q_onError(char const * const module, int_t const id) {
-    // NOTE: this implementation of the assertion handler is intended only
+    // NOTE: this implementation of the error handler is intended only
     // for debugging and MUST be changed for deployment of the application
     // (assuming that you ship your production code with assertions enabled).
     Q_UNUSED_PAR(module);
     Q_UNUSED_PAR(id);
     QS_ASSERTION(module, id, 10000U);
 
-#ifndef NDEBUG
-    // light up the user LED
-   // GPIOA->BSRR = (1U << LD2_PIN);  // turn LED on
-    // for debugging, hang on in an endless loop...
+//#ifndef NDEBUG
+//    // light up the user LED
+//    //GPIOA->BSRR = (1U << LD4_PIN);  // turn LED on
+//    // for debugging, hang on in an endless loop...
 //    for (;;) {
 //    }
-#endif
-
-  //  NVIC_SystemReset();
+//#endif
+//
+//    NVIC_SystemReset();
 }
-//void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
-//{
-//  currentMillis = HAL_GetTick();
-//  if (GPIO_Pin == GPIO_PIN_13 && (currentMillis - previousMillis > 10))
-//  {
-//	  QEvt e;
-//	  e.sig = LED_ON_SIG;
-//	  QHsm_dispatch_(super_Led_Control, &e, 0U);
-//    previousMillis = currentMillis;
-//  }
-//}
+void QF_onStartup(void) {
+    // set up the SysTick timer to fire at BSP_TICKS_PER_SEC rate
+    SysTick_Config(SystemCoreClock / BSP_TICKS_PER_SEC);
+
+    // assign all priority bits for preemption-prio. and none to sub-prio.
+    NVIC_SetPriorityGrouping(0U);
+
+    // set priorities of ALL ISRs used in the system, see NOTE1
+    NVIC_SetPriority(USART2_IRQn,    0); // kernel UNAWARE interrupt
+ //   NVIC_SetPriority(EXTI0_1_IRQn,   QF_AWARE_ISR_CMSIS_PRI + 0U);
+    NVIC_SetPriority(SysTick_IRQn,   QF_AWARE_ISR_CMSIS_PRI + 1U);
+    // ...
+
+    // enable IRQs...
+  //  NVIC_EnableIRQ(EXTI0_1_IRQn);
+
+#ifdef Q_SPY
+    NVIC_EnableIRQ(USART2_IRQn); // UART2 interrupt used for QS-RX
+#endif
+}
+//............................................................................
+void QF_onCleanup(void) {
+}
+//............................................................................
+void QK_onIdle(void) {
+    // toggle an LED on and then off (not enough LEDs, see NOTE02)
+    //QF_INT_DISABLE();
+    //QF_MEM_SYS();
+    //GPIOA->BSRR = (1U << LD4_PIN);         // turn LED[n] on
+    //GPIOA->BSRR = (1U << (LD4_PIN + 16U)); // turn LED[n] off
+    //QF_MEM_APP();
+    //QF_INT_ENABLE();
+
+#ifdef Q_SPY
+#elif defined NDEBUG
+    // Put the CPU and peripherals to the low-power mode.
+    // you might need to customize the clock management for your application,
+    // see the datasheet for your particular Cortex-M MCU.
+    //
+    // !!!CAUTION!!!
+    // The WFI instruction stops the CPU clock, which unfortunately disables
+    // the JTAG port, so the ST-Link debugger can no longer connect to the
+    // board. For that reason, the call to __WFI() has to be used with CAUTION.
+    //
+    // NOTE: If you find your board "frozen" like this, strap BOOT0 to VDD and
+    // reset the board, then connect with ST-Link Utilities and erase the part.
+    // The trick with BOOT(0) is it gets the part to run the System Loader
+    // instead of your broken code. When done disconnect BOOT0, and start over.
+    //
+    //__WFI(); // Wait-For-Interrupt
+#endif
+}
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
+{
+  /* USER CODE BEGIN Callback 0 */
+
+  /* USER CODE END Callback 0 */
+  if (htim->Instance == TIM2) {
+    HAL_IncTick();
+  }
+  /* USER CODE BEGIN Callback 1 */
+
+  /* USER CODE END Callback 1 */
+}
 /* USER CODE END 4 */
 
 /**

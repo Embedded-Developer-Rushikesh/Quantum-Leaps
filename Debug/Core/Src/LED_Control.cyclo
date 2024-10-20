@@ -1,8 +1,0 @@
-../Core/Src/LED_Control.c:72:8:Led_Control_initial	1
-../Core/Src/LED_Control.c:80:8:Led_Control_LED_CONTROL	1
-../Core/Src/LED_Control.c:92:8:Led_Control_LED_OFF	2
-../Core/Src/LED_Control.c:111:8:Led_Control_LED_DIM	3
-../Core/Src/LED_Control.c:137:8:Led_Control_LED_MEDIUM	3
-../Core/Src/LED_Control.c:163:8:Led_Control_LED_FULL	3
-../Core/Src/LED_Control.c:191:6:LED_Intencity_Control	1
-../Core/Src/LED_Control.c:198:6:Led_Control_Ctor	1

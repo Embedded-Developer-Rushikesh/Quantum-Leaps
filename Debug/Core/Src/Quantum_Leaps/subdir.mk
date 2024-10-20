@@ -5,13 +5,16 @@
 
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS += \
-../Core/Src/Quantum_Leaps/LED_Control.c 
+../Core/Src/Quantum_Leaps/Led_Control.c \
+../Core/Src/Quantum_Leaps/main.c 
 
 OBJS += \
-./Core/Src/Quantum_Leaps/LED_Control.o 
+./Core/Src/Quantum_Leaps/Led_Control.o \
+./Core/Src/Quantum_Leaps/main.o 
 
 C_DEPS += \
-./Core/Src/Quantum_Leaps/LED_Control.d 
+./Core/Src/Quantum_Leaps/Led_Control.d \
+./Core/Src/Quantum_Leaps/main.d 
 
 
 # Each subdirectory must supply rules for building sources it contributes
@@ -21,7 +24,7 @@ Core/Src/Quantum_Leaps/%.o Core/Src/Quantum_Leaps/%.su Core/Src/Quantum_Leaps/%.
 clean: clean-Core-2f-Src-2f-Quantum_Leaps
 
 clean-Core-2f-Src-2f-Quantum_Leaps:
-	-$(RM) ./Core/Src/Quantum_Leaps/LED_Control.cyclo ./Core/Src/Quantum_Leaps/LED_Control.d ./Core/Src/Quantum_Leaps/LED_Control.o ./Core/Src/Quantum_Leaps/LED_Control.su
+	-$(RM) ./Core/Src/Quantum_Leaps/Led_Control.cyclo ./Core/Src/Quantum_Leaps/Led_Control.d ./Core/Src/Quantum_Leaps/Led_Control.o ./Core/Src/Quantum_Leaps/Led_Control.su ./Core/Src/Quantum_Leaps/main.cyclo ./Core/Src/Quantum_Leaps/main.d ./Core/Src/Quantum_Leaps/main.o ./Core/Src/Quantum_Leaps/main.su
 
 .PHONY: clean-Core-2f-Src-2f-Quantum_Leaps
 

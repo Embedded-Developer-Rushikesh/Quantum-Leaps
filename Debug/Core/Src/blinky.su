@@ -1,0 +1,4 @@
+../Core/Src/blinky.c:65:6:Blinky_ctor	16	static
+../Core/Src/blinky.c:72:8:Blinky_initial	16	static
+../Core/Src/blinky.c:81:8:Blinky_off	24	static
+../Core/Src/blinky.c:101:8:Blinky_on	24	static

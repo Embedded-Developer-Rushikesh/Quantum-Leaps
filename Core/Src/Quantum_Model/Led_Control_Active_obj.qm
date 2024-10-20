@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<model version="6.1.1" links="0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.state-machine.com/qm/qm.xsd">
+ <framework name="qpc"/>
+ <package name="AO" stereotype="0x02">
+  <class name="Led_Contol" superclass="qpc::QActive">
+   <attribute name="timeEvt" type="QTimeEvt" visibility="0x00" properties="0x00"/>
+   <attribute name="obj" type="Led_Contol " visibility="0x00" properties="0x01"/>
+   <statechart properties="0x00">
+    <initial target="../1">
+     <action>QTimeEvt_armX(&amp;me-&gt;timeEvt, BSP_TICKS_PER_SEC/2, BSP_TICKS_PER_SEC/2);</action>
+     <initial_glyph conn="6,2,5,0,17,5">
+      <action box="0,-2,10,2"/>
+     </initial_glyph>
+    </initial>
+    <state name="off">
+     <entry>if(btn_pad_value==false){
+Led_off();
+}</entry>
+     <tran trig="TIMEOUT" target="../../2">
+      <tran_glyph conn="8,22,3,0,24,16">
+       <action box="0,-2,10,2"/>
+      </tran_glyph>
+     </tran>
+     <state_glyph node="8,7,29,18">
+      <entry box="1,2,6,2"/>
+     </state_glyph>
+    </state>
+    <state name="On">
+     <entry>if(btn_pad_value==false){
+Led_On();
+}</entry>
+     <tran trig="TIMEOUT" target="../../1">
+      <tran_glyph conn="11,52,3,1,42,-33,-16">
+       <action box="0,-2,10,2"/>
+      </tran_glyph>
+     </tran>
+     <state_glyph node="11,38,30,25">
+      <entry box="1,2,6,2"/>
+     </state_glyph>
+    </state>
+    <state_diagram size="91,72"/>
+   </statechart>
+  </class>
+  <directory name="../Quantum_Leaps">
+   <file name="Led_Control.c">
+    <text>#include&quot;Led_Control.h&quot;
+bool btn_pad_value=false;
+uint16_t LED_DIM=50;
+uint16_t LED_MEDIUM=150;
+uint16_t LED_FULL=150;
+uint16_t  LED_OFF=0;
+extern TIM_HandleTypeDef htim2;
+
+$define${AO::ctor_Led_Control}
+$define${AO::Led_Contol}
+$define${AO::super_Led_Control}
+$define${AO::LED_Intencity_Control}
+$define${AO::Led_On}
+$define${AO::Led_off}
+$define${AO::button}
+$define${AO::button_ctor}
+$define${AO::super_button}</text>
+   </file>
+   <file name="Led_Control.h">
+    <text>#include&quot;qpc.h&quot;
+#include&quot;stm32f4xx.h&quot;
+#include&quot;stdbool.h&quot;
+#include&quot;main.h&quot;
+enum Led_Control_en{
+TIMEOUT_SIG=Q_USER_SIG,
+ON_SIG
+};
+
+#define BSP_TICKS_PER_SEC    100U
+extern uint16_t LED_DIM;
+extern uint16_t LED_MEDIUM;
+extern uint16_t LED_FULL;
+extern uint16_t  LED_OFF;
+extern bool btn_pad_value;
+$declare${AO::LED_Intencity_Control}
+$declare${AO::ctor_Led_Control}
+$declare${AO::Led_Contol}
+$declare ${AO::super_Led_Control}
+
+$declare${AO::Led_On}
+$declare${AO::Led_off}
+$declare${AO::button}
+$declare${AO::button_ctor}
+$declare${AO::super_button}
+</text>
+   </file>
+  </directory>
+  <attribute name="super_Led_Control" type="QActive * const" visibility="0x00" properties="0x00">
+   <code>=&amp;Led_Contol_obj.super;</code>
+  </attribute>
+  <operation name="ctor_Led_Control" type="void" visibility="0x00" properties="0x00">
+   <code>     Led_Contol * const me = &amp;Led_Contol_obj;
+    QActive_ctor(&amp;me-&gt;super, Q_STATE_CAST(&amp;Led_Contol_initial));
+    QTimeEvt_ctorX(&amp;me-&gt;timeEvt, &amp;me-&gt;super, TIMEOUT_SIG, 0U);</code>
+  </operation>
+  <operation name="Led_On" type="void" visibility="0x00" properties="0x00">
+   <code>HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, GPIO_PIN_SET);</code>
+  </operation>
+  <operation name="Led_off" type="void" visibility="0x00" properties="0x00">
+   <code>HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, GPIO_PIN_RESET);</code>
+  </operation>
+  <class name="button" superclass="qpc::QActive">
+   <attribute name="timeEvt" type="QTimeEvt" visibility="0x00" properties="0x00"/>
+   <attribute name="obj" type="button" visibility="0x02" properties="0x01"/>
+   <statechart properties="0x00">
+    <initial target="../1/0">
+     <action> QTimeEvt_armX(&amp;me-&gt;timeEvt, BSP_TICKS_PER_SEC/2, BSP_TICKS_PER_SEC/2);
+LED_Intencity_Control(LED_DIM);</action>
+     <initial_glyph conn="27,2,5,0,10,14">
+      <action box="0,-2,10,2"/>
+     </initial_glyph>
+    </initial>
+    <state name="button">
+     <state name="DIM">
+      <tran trig="TIMEOUT" target="../../1">
+       <action> btn_pad_value=HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_13);
+if(btn_pad_value)
+{
+LED_Intencity_Control(LED_MEDIUM);
+}</action>
+       <tran_glyph conn="48,27,1,3,13">
+        <action box="0,-2,10,2"/>
+       </tran_glyph>
+      </tran>
+      <state_glyph node="26,16,22,19"/>
+     </state>
+     <state name="MIDIUM">
+      <tran trig="TIMEOUT" target="../../2">
+       <action> btn_pad_value=HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_13);
+if(btn_pad_value)
+{
+LED_Intencity_Control(LED_FULL);
+}</action>
+       <tran_glyph conn="71,35,2,0,5">
+        <action box="0,-2,10,2"/>
+       </tran_glyph>
+      </tran>
+      <state_glyph node="61,16,22,19"/>
+     </state>
+     <state name="FULL">
+      <tran trig="TIMEOUT" target="../../0">
+       <action> btn_pad_value=HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_13);
+if(btn_pad_value)
+{
+LED_Intencity_Control(LED_DIM);
+}</action>
+       <tran_glyph conn="61,50,3,2,-28,-15">
+        <action box="0,-2,10,2"/>
+       </tran_glyph>
+      </tran>
+      <state_glyph node="61,40,23,18"/>
+     </state>
+     <state_glyph node="18,9,77,52"/>
+    </state>
+    <state_diagram size="98,68"/>
+   </statechart>
+  </class>
+  <operation name="button_ctor" type="void" visibility="0x00" properties="0x00">
+   <code>  button * const me = &amp;button_obj;
+   QActive_ctor(&amp;me-&gt;super, Q_STATE_CAST(&amp;button_initial));
+  QTimeEvt_ctorX(&amp;me-&gt;timeEvt, &amp;me-&gt;super, TIMEOUT_SIG, 0U);
+   //QActive_armX(&amp;me-&gt;super,0,BSP_TICKS_PER_SEC/2, BSP_TICKS_PER_SEC/2);</code>
+  </operation>
+  <attribute name="super_button" type="QActive * const" visibility="0x00" properties="0x00">
+   <code>=&amp;button_obj.super;</code>
+  </attribute>
+  <operation name="LED_Intencity_Control" type="void" visibility="0x00" properties="0x00">
+   <parameter name="duty_uint16_t" type="uint16_t"/>
+   <code>  __HAL_TIM_SET_COMPARE(&amp;htim2,TIM_CHANNEL_1,duty_uint16_t);</code>
+  </operation>
+ </package>
+</model>
